@@ -72,9 +72,7 @@ class MqttManager(connectionFn: (MqttSourceSettings) => MqttConnectOptions,
       .filter(t => checkTopic(topic, t._2))
       .map(t => t._2.getSource)
 
-    val wildcard = matched.headOption.getOrElse{
-      throw new ConfigException(s"Topic '$topic' can not be matched with a source defined by KCQL.")
-    }
+    val wildcard = matched.headOption.getOrElse(return)
     val kcql = sourceToTopicMap
       .getOrElse(wildcard, throw new ConfigException(s"Topic $topic is not configured. Available topics are:${sourceToTopicMap.keySet.mkString(",")}"))
     val kafkaTopic = kcql.getTarget
